@@ -66,7 +66,7 @@ func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-	if user, err := dao.GetUserByName(username); err != nil {
+	if user, err := service.GetUserByName(username); err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response:Response{StatusCode: 3, StatusMsg: "user doesn't exist"},
 		})

@@ -47,3 +47,12 @@ func AddUser (user *dao.User) error {
 	}
 	return nil
 }
+
+func GetUserByName (username string) (dao.User, error){
+	if user, err := dao.GetUserByName(username); err != nil {
+		log.Println("Get user failure")
+		return dao.User{}, err
+	}else {
+		return user, nil
+	}
+}
