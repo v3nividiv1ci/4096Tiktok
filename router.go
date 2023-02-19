@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/RaymondCode/simple-demo/controller"
 	"github.com/gin-gonic/gin"
+	"4096Tiktok/controller"
+	"4096Tiktok/middleware"
 )
 
 func initRouter(r *gin.Engine) {
@@ -13,11 +14,11 @@ func initRouter(r *gin.Engine) {
 
 	// basic apis
 	apiRouter.GET("/feed/", controller.Feed)
-	apiRouter.GET("/user/", controller.UserInfo)
+	apiRouter.GET("/user/", middleware.JwtMiddleWare(), controller.UserInfo)
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/login/", controller.Login)
-	apiRouter.POST("/publish/action/", controller.Publish)
-	apiRouter.GET("/publish/list/", controller.PublishList)
+	apiRouter.POST("/publish/action/", middleware.JwtMiddleWare(), controller.Publish)
+	apiRouter.GET("/publish/list/",  middleware.JwtMiddleWare(), controller.PublishList)
 
 	// extra apis - I
 	apiRouter.POST("/favorite/action/", controller.FavoriteAction)

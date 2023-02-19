@@ -1,4 +1,4 @@
-module github.com/RaymondCode/simple-demo
+module 4096Tiktok
 
 go 1.17
 
@@ -9,16 +9,9 @@ require (
 )
 
 require (
-	github.com/go-playground/validator/v10 v10.11.0 // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/ugorji/go v1.2.7 // indirect
+	github.com/RaymondCode/simple-demo v0.0.0-20230109111057-5031aee01508
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
-	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/gorm v1.24.5
 )
