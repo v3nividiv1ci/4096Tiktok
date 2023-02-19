@@ -24,15 +24,8 @@ func AddUser(user *User) error{
 }
 
 func GetUserByName(name string) (User, error) {
-	DB := GetDB()
-	tx := DB.Begin()
+	// Todo: find user in the database
 	user := User{}
-	if err := tx.Where("username = ?", name).First(&user).Error; err != nil {
-		tx.Rollback()
-		log.Println(err.Error())
-		return user, err
-	}
-	tx.Commit()
 	return user, nil
 }
 

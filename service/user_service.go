@@ -2,7 +2,6 @@ package service
 
 import (
 	"4096Tiktok/dao"
-	"4096Tiktok/middleware"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"regexp"
@@ -23,8 +22,8 @@ func VerifyNameAndPwd(username, password string) bool {
 }
 
 func ReleaseToken (user *dao.User) (string, error){
-	token, err := middleware.TokenRelease(*user)
-	return token, err
+	// Todo: release token
+	return "", nil
 }
 
 func EncryptPwd (password string) string {
@@ -46,4 +45,9 @@ func AddUser (user *dao.User) error {
 		return err
 	}
 	return nil
+}
+
+func GetUserByName (username string) (dao.User, error) {
+	// Todo: Get user
+	return dao.User{}, nil
 }
