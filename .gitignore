@@ -23,3 +23,5 @@ go.work
 .idea
 /ossDB/config.go
 /public/
+/ossDB/config_private.go
+/dao/config_private.go
