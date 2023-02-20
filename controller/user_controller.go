@@ -41,7 +41,7 @@ func Register(c *gin.Context) {
 
 	if service.VerifyNameAndPwd(username, password) != true {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response:Response{StatusCode: 1, StatusMsg: "invalid username or password"},
+			Response:Response{StatusCode: 201, StatusMsg: "invalid username or password"},
 		})
 		return
 	}
@@ -50,7 +50,7 @@ func Register(c *gin.Context) {
 	user := dao.User{Username: username, Password: encryptedPwd}
 	if err := service.AddUser(&user); err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response:Response{StatusCode: 2, StatusMsg: "username registered"},
+			Response:Response{StatusCode: 202, StatusMsg: "username registered"},
 		})
 	}else {
 		token, _ := service.ReleaseToken(&user)
@@ -68,12 +68,12 @@ func Login(c *gin.Context) {
 
 	if user, err := service.GetUserByName(username); err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response:Response{StatusCode: 3, StatusMsg: "user doesn't exist"},
+			Response:Response{StatusCode: 203, StatusMsg: "user doesn't exist"},
 		})
 	}else {
 		if service.DecryptPwd(password, user.Password) != true {
 			c.JSON(http.StatusOK, UserLoginResponse{
-				Response:Response{StatusCode: 4, StatusMsg: "incorrect password"},
+				Response:Response{StatusCode: 204, StatusMsg: "incorrect password"},
 			})
 		}else {
 			token, _ := service.ReleaseToken(&user)
@@ -88,16 +88,24 @@ func Login(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	token := c.Query("token")
+	//token := c.Query("token")
+	//user_id := c.Query("user_id")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	//user := dao.User{}
+
+	//user, _ := c.Get("user")
+	//User := user.(dao.User)
+	////Id := User.ID
+	//fmt.Println("user: ", user)
+
+	//if user, exist := usersLoginInfo[token]; exist {
 		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 0},
-			User:     user,
+			Response: Response{StatusCode: 0, StatusMsg: "test ok"},
+			//User:     user,
 		})
-	} else {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
-	}
+	//} else {
+	//	c.JSON(http.StatusOK, UserResponse{
+	//		Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+	//	})
+	//}
 }

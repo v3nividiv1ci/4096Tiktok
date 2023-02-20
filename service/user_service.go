@@ -22,17 +22,17 @@ func VerifyNameAndPwd(username, password string) bool {
 	return true
 }
 
-func ReleaseToken (user *dao.User) (string, error){
+func ReleaseToken(user *dao.User) (string, error){
 	token, err := middleware.TokenRelease(*user)
 	return token, err
 }
 
-func EncryptPwd (password string) string {
+func EncryptPwd(password string) string {
 	EncryptedPwd, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(EncryptedPwd)
 }
 
-func DecryptPwd (password, encryptedPwd string) bool {
+func DecryptPwd(password, encryptedPwd string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(encryptedPwd), []byte(password))
 	if err != nil {
 		return false
@@ -40,7 +40,7 @@ func DecryptPwd (password, encryptedPwd string) bool {
 	return true
 }
 
-func AddUser (user *dao.User) error {
+func AddUser(user *dao.User) error {
 	if err := dao.AddUser(user); err != nil {
 		log.Println("AddUser failure")
 		return err
@@ -48,7 +48,7 @@ func AddUser (user *dao.User) error {
 	return nil
 }
 
-func GetUserByName (username string) (dao.User, error){
+func GetUserByName(username string) (dao.User, error){
 	if user, err := dao.GetUserByName(username); err != nil {
 		log.Println("Get user failure")
 		return dao.User{}, err
