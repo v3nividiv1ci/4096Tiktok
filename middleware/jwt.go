@@ -3,9 +3,11 @@ package middleware
 import (
 	//"4096Tiktok/controller"
 	"4096Tiktok/dao"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -22,18 +24,26 @@ func JwtMiddleWare() gin.HandlerFunc {
 		}
 		// token为空
 		if TString == "" {
-			c.JSON(http.StatusOK, Response{StatusCode: 401, StatusMsg: "token为空"})
+			c.JSON(http.StatusOK, Response{StatusCode: 101, StatusMsg: "token为空"})
 			c.Abort()
 			return
 		}
 
 		token, claims, err := TokenParse(TString)
 
-		if err != nil || !token.Valid {
-			c.JSON(http.StatusOK, Response{StatusCode: 402, StatusMsg: "token错误"})
-			c.Abort()
-			return
+		if err != nil {
+			if !token.Valid && strings.Contains(err.Error(), "invalid"){
+				c.JSON(http.StatusOK, Response{StatusCode: 102, StatusMsg: "token错误"})
+				c.Abort()
+				return
+			}else if !token.Valid && strings.Contains(err.Error(), "expired") {
+				c.JSON(http.StatusOK, Response{StatusCode: 103, StatusMsg: "token过期"})
+				c.Abort()
+				return
+			}
 		}
+
+
 
 		UserId := claims.UserId
 		DB := dao.GetDB()
@@ -42,7 +52,7 @@ func JwtMiddleWare() gin.HandlerFunc {
 
 		// not registered
 		if user.ID == 0 {
-			c.JSON(http.StatusUnauthorized, Response{StatusCode: 403, StatusMsg: "用户未注册"})
+			c.JSON(http.StatusOK, Response{StatusCode: 104, StatusMsg: "用户未注册"})
 			c.Abort()
 			return
 		}
@@ -88,7 +98,7 @@ func TokenParse(TokenString string) (*jwt.Token, *Claims, error) {
 	token, err := jwt.ParseWithClaims(TokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return JwtKey, nil
 	})
-
+	fmt.Println("err is ", err)
 	return token, claims, err
 
 }
