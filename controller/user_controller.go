@@ -56,7 +56,7 @@ func Register(c *gin.Context) {
 		token, _ := service.ReleaseToken(&user)
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0},
-			UserId: int(user.ID),
+			UserId: int(user.UserID),
 			Token:    token,
 		})
 	}
@@ -79,7 +79,7 @@ func Login(c *gin.Context) {
 			token, _ := service.ReleaseToken(&user)
 			c.JSON(http.StatusOK, UserLoginResponse{
 				Response: Response{StatusCode: 0},
-				UserId: int(user.ID),
+				UserId: int(user.UserID),
 				Token:    token,
 			})
 		}

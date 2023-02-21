@@ -14,9 +14,8 @@ func InitDB() *gorm.DB {
 	}
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Comment{})
-	db.AutoMigrate(&Follow{})
+	//db.AutoMigrate(&Follow{})
 	db.AutoMigrate(&Video{})
-	db.AutoMigrate(&Like{})
 	DB = db
 	return db
 }

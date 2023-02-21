@@ -1,10 +1,9 @@
 package dao
 
-import "gorm.io/gorm"
-
 type Comment struct {
-	gorm.Model
+	CommentID uint `gorm:"primarykey"`
 	UserId int
 	VideoId int
 	Text string
+	CreatedAt int
 }

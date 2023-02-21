@@ -1,9 +1,6 @@
 package dao
 
-import "gorm.io/gorm"
-
-type Follow struct {
-	gorm.Model
-	UserId int
-	FollowerId int
-}
+//type Follow struct {
+//	UserID uint `gorm:"column:user_id"`
+//	FanID  uint `gorm:"column:fan_id"`
+//}

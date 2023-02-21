@@ -1,14 +1,17 @@
 package dao
 
 import (
-	"gorm.io/gorm"
 	"log"
 )
 
 type User struct {
-	gorm.Model
-	Username string `gorm:"index:,unique"`
-	Password string
+	UserID 		uint			`gorm:"primarykey"`
+	Username 	string 		`gorm:"index:,unique"`
+	Password 	string
+	Videos		[] *Video
+	Comments	[] *Comment
+	Likes		[] *Video 	`gorm:"many2many:like;joinForeignKey:user_id;joinReferences:video_id;"`
+	Fans		[] *User 	`gorm:"many2many:follow;joinForeignKey:user_id;joinReferences:fan_id;"`
 }
 
 func AddUser(user *User) error{

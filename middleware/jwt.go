@@ -51,7 +51,7 @@ func JwtMiddleWare() gin.HandlerFunc {
 		DB.First(&user, UserId)
 
 		// not registered
-		if user.ID == 0 {
+		if user.UserID == 0 {
 			c.JSON(http.StatusOK, Response{StatusCode: 104, StatusMsg: "用户未注册"})
 			c.Abort()
 			return
@@ -73,7 +73,7 @@ type Claims struct {
 func TokenRelease(user dao.User) (string, error) {
 	ExpTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
-		UserId: user.ID,
+		UserId: user.UserID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: ExpTime.Unix(),
 			IssuedAt:  time.Now().Unix(),

@@ -40,30 +40,39 @@ func Publish(c *gin.Context) {
 	user := User.(dao.User)
 	filename := filepath.Base(fileHeader.Filename)
 
-	playName := fmt.Sprintf("video/%d_%s", user.ID, filename)
+	if service.GetVideoByUserIDAndTitle(user.UserID, title) == true {
+		c.JSON(http.StatusOK, Response{
+			StatusCode: 303,
+			StatusMsg:  "duplicate video name",
+		})
+		return
+	}
+
+	playName := fmt.Sprintf("video/%d_%s_%s", user.UserID, title, filename)
+
 	if err := oss.PutObject(playName, file); err != nil {
 		c.JSON(http.StatusOK, Response{
-			StatusCode: 302,
+			StatusCode: 304,
 			StatusMsg:  err.Error(),
 		})
 		return
 	}
 
-	//CoverName := fmt.Sprintf("cover/%d_%s", user.ID, filename)
 	playUrl := oss.GeneratePlayUrl(playName)
 	coverUrl := oss.GenerateCoverUrl(playUrl)
 
 	video := dao.Video{
-		AuthorId: int(user.ID),
+		UserID: user.UserID,
 		PlayUrl:  playUrl,
 		CoverUrl: coverUrl,
 		Title:    title,
 	}
 	if err = service.AddVideo(&video); err != nil {
 		c.JSON(http.StatusOK, Response{
-			StatusCode: 303,
+			StatusCode: 305,
 			StatusMsg:  err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, Response{
