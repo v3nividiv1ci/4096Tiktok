@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"4096Tiktok/controller"
 	"4096Tiktok/middleware"
+	"github.com/gin-gonic/gin"
 )
 
 func initRouter(r *gin.Engine) {
@@ -21,7 +21,7 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/publish/list/",  middleware.JwtMiddleWare(), controller.PublishList)
 
 	// extra apis - I
-	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
+	apiRouter.POST("/favorite/action/", middleware.JwtMiddleWare(), controller.FavoriteAction)
 	apiRouter.GET("/favorite/list/", controller.FavoriteList)
 	apiRouter.POST("/comment/action/", controller.CommentAction)
 	apiRouter.GET("/comment/list/", controller.CommentList)

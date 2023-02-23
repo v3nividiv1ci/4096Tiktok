@@ -10,8 +10,8 @@ type Video struct {
 	PlayUrl 	string		`gorm:"not null"`
 	CoverUrl	string		`gorm:"not null"`
 	Title 		string		`gorm:"not null"`
-	Comments	[] *Comment
-	Likes		[] *User	`gorm:"many2many:like;joinForeignKey:video_id;joinReferences:user_id;"`
+	Comments	[] Comment
+	Likes		[] User	`gorm:"many2many:like;joinForeignKey:video_id;joinReferences:user_id;"`
 }
 
 func AddVideo(video *Video) error {
@@ -37,4 +37,13 @@ func GetVideoByUserAndTitle(UID uint, title string) (Video, error) {
 	}
 	tx.Commit()
 	return video, nil
+}
+
+func AddLike(useId, videoId uint) error{
+	DB := GetDB()
+	tx := DB.Begin()
+
+
+	tx.Commit()
+	return nil
 }

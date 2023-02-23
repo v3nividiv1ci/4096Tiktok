@@ -26,8 +26,13 @@ var userIdSequence = int64(1)
 
 type UserLoginResponse struct {
 	Response
-	UserId int  `json:"user_id,omitempty"`
-	Token  string `json:"token"`
+	UserId int  	`json:"user_id,omitempty"`
+	Token  string 	`json:"token"`
+}
+
+type UserInfoResponse struct {
+	Response
+	Userinfo service.Userinfo	`json:"user"`
 }
 
 type UserResponse struct {
@@ -99,10 +104,26 @@ func UserInfo(c *gin.Context) {
 	//fmt.Println("user: ", user)
 
 	//if user, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 0, StatusMsg: "test ok"},
-			//User:     user,
+	//MeUser, _ := c.Get("user")
+	//userId := c.Query("user_id")
+	//Id, _ := strconv.Atoi(userId)
+	//userinfo, exist := service.GetUserInfoByID(Id)
+	var exist bool
+	if exist != true {
+		c.JSON(http.StatusOK, UserInfoResponse{
+			Response: Response{StatusCode: 205, StatusMsg: "user doesn't exist"},
+			//Userinfo: userinfo,
 		})
+	}
+
+
+
+	 {
+		c.JSON(http.StatusOK, UserInfoResponse{
+			Response: Response{StatusCode: 0, StatusMsg: "test ok"},
+			//Userinfo: Userinfo,
+		})
+	}
 	//} else {
 	//	c.JSON(http.StatusOK, UserResponse{
 	//		Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},

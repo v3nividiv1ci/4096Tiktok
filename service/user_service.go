@@ -8,6 +8,20 @@ import (
 	"regexp"
 )
 
+type Userinfo struct {
+	Id   			int    	`json:"id"`
+	Name 			string 	`json:"name"`
+	FollowCount 	int 	`json:"follow_count"`
+	FollowerCount 	int 	`json:"follower_count"`
+	IsFollow 		bool 	`json:"is_follow"`
+	Avatar 			string 	`json:"avatar"`
+	BackgroundImage string 	`json:"background_image"`
+	Signature 		string 	`json:"signature"`
+	TotalFavorited 	string 	`json:"total_favorited"`
+	WorkCount 		int 	`json:"work_count"`
+	FavoriteCount 	int 	`json:"favorite_count"`
+}
+
 func CheckString(string string) bool {
 	if ok, _ := regexp.MatchString("^[\\w_-]{6,32}$", string); !ok {
 		return false
@@ -56,3 +70,9 @@ func GetUserByName(username string) (dao.User, error){
 		return user, nil
 	}
 }
+
+//func GetUserInfoByID(Id int) (Userinfo, bool) {
+//	Userinfo := Userinfo{}
+//	user, err := dao.GetUserByID(Id)
+//	return Userinfo, true
+//}
