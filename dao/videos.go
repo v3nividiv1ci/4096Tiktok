@@ -39,11 +39,23 @@ func GetVideoByUserAndTitle(UID uint, title string) (Video, error) {
 	return video, nil
 }
 
-func AddLike(useId, videoId uint) error{
+func GetVideoIdsByUserId(UserId int) [] uint {
 	DB := GetDB()
 	tx := DB.Begin()
-
-
+	video_ids := []uint{}
+	tx.Model(&Video{}).Where("user_id = ?", UserId).Select("video_id").Find(&video_ids)
 	tx.Commit()
-	return nil
+	return video_ids
 }
+
+func GetVideoCountByUserId(UserId int) int64 {
+	DB := GetDB()
+	tx := DB.Begin()
+	var count int64
+	tx.Model(&Video{}).Where("user_id = ?", UserId).Count(&count)
+	tx.Commit()
+	return count
+}
+
+
+

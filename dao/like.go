@@ -1,6 +1,10 @@
 package dao
 
-import "log"
+import (
+	"fmt"
+	"gorm.io/gorm"
+	"log"
+)
 
 func GetVideoById(VideoId int) (Video, error) {
 	DB := GetDB()
@@ -45,6 +49,48 @@ func VideoLikeCount(VideoId int) int64 {
 	DB := GetDB()
 	tx := DB.Begin()
 	count = tx.Model(&Video{}).Where("video_id = ?", VideoId).Association("Likes").Count()
+	tx.Commit()
+	return count
+}
+
+func UserLikeCount(UserId int) int64 {
+	DB := GetDB()
+	tx := DB.Begin()
+	var user User
+	tx.Preload("Likes").First(&user, UserId)
+	var likesCount int64
+	for _, video := range user.Likes {
+		likesCount += tx.Model(&video).Association("Likes").Count()
+	}
+	tx.Commit()
+	return likesCount
+}
+
+func GetUserLikedCount(Id int) int64 {
+	DB := GetDB()
+	tx := DB.Begin()
+
+	var user User
+	tx.Preload("Videos.Likes").Find(&user)
+
+	var totalLikes int64
+	for _, video := range user.Videos {
+		totalLikes += int64(len(video.Likes))
+	}
+	tx.Commit()
+	return totalLikes
+}
+
+func UserAllLikedCount(ids [] uint) int64 {
+	var count int64
+	DB := GetDB()
+	tx := DB.Begin()
+
+	fmt.Println("video_ids are: ", ids)
+	//count = tx.Model(&Video{}).Where("video_id IN ?", ids).Association("Likes").Count()
+	tx.Preload("Videos", func(db *gorm.DB) *gorm.DB {
+		return db.Where("video_id in ?", ids)
+	}).Count(&count)
 	tx.Commit()
 	return count
 }

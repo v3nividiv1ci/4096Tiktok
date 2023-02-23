@@ -20,3 +20,18 @@ func FavorVideo(UserId int, action int, video *dao.Video) error {
 	}
 	return err
 }
+
+func GetUserLikeCount(Id int) int64 {
+	count := dao.UserLikeCount(Id)
+	return count
+}
+
+func GetUserLikedCount(Id int) int64 {
+	count := dao.GetUserLikedCount(Id)
+	return count
+}
+
+func GetVideoCountByUserId(Id int) int64 {
+	count := dao.GetVideoCountByUserId(Id)
+	return count
+}

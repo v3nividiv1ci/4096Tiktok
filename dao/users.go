@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"gorm.io/gorm"
 	"log"
 )
 
@@ -40,17 +39,17 @@ func GetUserByName(name string) (User, error) {
 	return user, nil
 }
 
-func GetUserByID(Id int) (User, error, *gorm.DB) {
+func GetUserById(Id int) (User, error) {
 	DB := GetDB()
 	tx := DB.Begin()
 	user := User{}
 	if err := tx.Where("user_id = ?", Id).First(&user).Error; err != nil {
 		tx.Rollback()
 		log.Println(err.Error())
-		return user, err, nil
+		return user, err
 	}
 	tx.Commit()
-	return user, nil, tx
+	return user, nil
 }
 
 func GetFollowCount(fanId int) (int64, error) {

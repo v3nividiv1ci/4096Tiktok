@@ -25,3 +25,4 @@ go.work
 /public/
 /ossDB/config_private.go
 /dao/config_private.go
+/service/config.go
