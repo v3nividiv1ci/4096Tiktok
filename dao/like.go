@@ -16,7 +16,7 @@ func GetVideoById(VideoId int) (Video, error) {
 	return video, nil
 }
 
-func LikeVideo(video *Video, UserId int) error{
+func LikeVideo(video *Video, UserId int) error {
 	DB := GetDB()
 	tx := DB.Begin()
 	if err := tx.Model(&video).Association("Likes").Append(&User{UserID: uint(UserId)}); err != nil {
@@ -28,14 +28,23 @@ func LikeVideo(video *Video, UserId int) error{
 	return nil
 }
 
-func DislikeVideo(video *Video, UseId int) error{
+func DislikeVideo(video *Video, UserId int) error {
 	DB := GetDB()
 	tx := DB.Begin()
-	if err := tx.Model(&video).Association("Likes").Delete(&User{UserID: uint(UseId)}); err != nil {
+	if err := tx.Model(&video).Association("Likes").Delete(&User{UserID: uint(UserId)}); err != nil {
 		tx.Rollback()
 		log.Println()
 		return err
 	}
 	tx.Commit()
 	return nil
+}
+
+func VideoLikeCount(VideoId int) int64 {
+	var count int64
+	DB := GetDB()
+	tx := DB.Begin()
+	count = tx.Model(&Video{}).Where("video_id = ?", VideoId).Association("Likes").Count()
+	tx.Commit()
+	return count
 }
