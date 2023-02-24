@@ -8,12 +8,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
+	"strconv"
 )
 
 type VideoListResponse struct {
 	Response
-	VideoList []Video `json:"video_list"`
+	VideoList []service.Video `json:"video_list"`
 }
+
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
@@ -83,10 +85,24 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
+	userId := c.Query("user_id")
+	id, _ := strconv.Atoi(userId)
+	User, _ := c.Get("user")
+	user := User.(dao.User)
+	_, err := service.GetUserById(id)
+	if err != nil {
+		c.JSON(http.StatusOK, UserInfoFailResponse{
+			Response: Response{StatusCode: 205, StatusMsg: "user doesn't exist"},
+			Userinfo: nil,
+		})
+		return
+	}
+	videos := service.GetUserVideosByID(int(user.UserID), id)
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
 		},
-		VideoList: DemoVideos,
+		VideoList: videos,
 	})
 }
+

@@ -63,6 +63,53 @@ func JwtMiddleWare() gin.HandlerFunc {
 	}
 }
 
+
+func JwtMiddleWarePass() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		TString := c.Query("token")
+		if TString == "" {
+			TString = c.PostForm("token")
+		}
+		// token为空
+		if TString == "" {
+			return
+		}
+
+		token, claims, err := TokenParse(TString)
+
+		if err != nil {
+			if !token.Valid && strings.Contains(err.Error(), "invalid"){
+				c.JSON(http.StatusOK, Response{StatusCode: 102, StatusMsg: "token错误"})
+				c.Abort()
+				return
+			}else if !token.Valid && strings.Contains(err.Error(), "expired") {
+				c.JSON(http.StatusOK, Response{StatusCode: 103, StatusMsg: "token过期"})
+				c.Abort()
+				return
+			}
+		}
+
+
+
+		UserId := claims.UserId
+		DB := dao.GetDB()
+		var user dao.User
+		DB.First(&user, UserId)
+
+		// not registered
+		if user.UserID == 0 {
+			c.JSON(http.StatusOK, Response{StatusCode: 104, StatusMsg: "用户未注册"})
+			c.Abort()
+			return
+		}
+
+		// write
+		c.Set("user", user)
+		c.Next()
+	}
+}
+
+
 var JwtKey = []byte("114514")
 
 type Claims struct {

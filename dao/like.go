@@ -44,13 +44,31 @@ func DislikeVideo(video *Video, UserId int) error {
 	return nil
 }
 
-func VideoLikeCount(VideoId int) int64 {
-	var count int64
+func IsVideoFavorited(videoID, userID int) bool{
 	DB := GetDB()
 	tx := DB.Begin()
-	count = tx.Model(&Video{}).Where("video_id = ?", VideoId).Association("Likes").Count()
+	var user User
+	tx.Preload("Likes").First(&user, userID)
+	var isLiked bool
+	for _, video := range user.Likes {
+		if video.VideoID == uint(videoID) {
+			isLiked = true
+			break
+		}
+	}
 	tx.Commit()
-	return count
+	return isLiked
+}
+
+func VideoLikeCount(VideoId int) int64 {
+	DB := GetDB()
+	tx := DB.Begin()
+	var video Video
+	tx.Preload("Likes").First(&video, VideoId)
+	likesCount := len(video.Likes)
+	fmt.Println("video ", VideoId, " count is ", likesCount)
+	tx.Commit()
+	return int64(likesCount)
 }
 
 func UserLikeCount(UserId int) int64 {
@@ -71,7 +89,7 @@ func GetUserLikedCount(Id int) int64 {
 	tx := DB.Begin()
 
 	var user User
-	tx.Preload("Videos.Likes").Find(&user)
+	tx.Preload("Videos.Likes").Find(&user, Id)
 
 	var totalLikes int64
 	for _, video := range user.Videos {

@@ -6,7 +6,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"regexp"
+	"strconv"
 )
+
+type User struct {
+	Id            int64  `json:"id,omitempty"`
+	Name          string `json:"name,omitempty"`
+	FollowCount   int64  `json:"follow_count,omitempty"`
+	FollowerCount int64  `json:"follower_count,omitempty"`
+	IsFollow      bool   `json:"is_follow,omitempty"`
+	Avatar 			string 	`json:"avatar"`
+	BackgroundImage string 	`json:"background_image"`
+	Signature 		string 	`json:"signature"`
+	TotalFavorited 	string 	`json:"total_favorited"`
+	WorkCount 		int 	`json:"work_count"`
+	FavoriteCount 	int 	`json:"favorite_count"`
+}
 
 func CheckString(string string) bool {
 	if ok, _ := regexp.MatchString("^[\\w_-]{6,32}$", string); !ok {
@@ -67,5 +82,25 @@ func GetUserById(Id int) (dao.User, error) {
 }
 
 
+func GetUserInfoById(UserId int) User {
+	user_db, _ := dao.GetUserById(UserId)
+	total_favorited := GetUserLikedCount(UserId)
+	work_count := GetVideoCountByUserId(UserId)
+	favorite_Count := GetUserLikeCount(UserId)
+
+
+	Userinfo := User{
+		Id:              int64(UserId),
+		Name:            user_db.Username,
+		Avatar:          avatar,
+		BackgroundImage: background_image,
+		Signature:       signature,
+		TotalFavorited: strconv.FormatInt(total_favorited, 10),
+		WorkCount:       int(work_count),
+		FavoriteCount:   int(favorite_Count),
+	}
+	return Userinfo
+}
+//func Get
 
 

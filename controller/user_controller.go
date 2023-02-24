@@ -3,7 +3,6 @@ package controller
 import (
 	"4096Tiktok/dao"
 	"4096Tiktok/service"
-	"fmt"
 	"strconv"
 
 	//"fmt"
@@ -27,21 +26,6 @@ var usersLoginInfo = map[string]User{
 
 var userIdSequence = int64(1)
 
-type Userinfo struct {
-	Id   			int    	`json:"id"`
-	Name 			string 	`json:"name"`
-	FollowCount 	int 	`json:"follow_count"`
-	FollowerCount 	int 	`json:"follower_count"`
-	IsFollow 		bool 	`json:"is_follow"`
-	Avatar 			string 	`json:"avatar"`
-	BackgroundImage string 	`json:"background_image"`
-	Signature 		string 	`json:"signature"`
-	TotalFavorited 	int 	`json:"total_favorited"`
-	WorkCount 		int 	`json:"work_count"`
-	FavoriteCount 	int 	`json:"favorite_count"`
-}
-
-
 type UserLoginResponse struct {
 	Response
 	UserId int  	`json:"user_id,omitempty"`
@@ -50,17 +34,12 @@ type UserLoginResponse struct {
 
 type UserInfoResponse struct {
 	Response
-	Userinfo Userinfo	`json:"user"`
+	Userinfo service.User	`json:"user"`
 }
 
 type UserInfoFailResponse struct {
 	Response
 	Userinfo error	`json:"user"`
-}
-
-type UserResponse struct {
-	Response
-	User User `json:"user"`
 }
 
 func Register(c *gin.Context) {
@@ -116,21 +95,9 @@ func Login(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	//token := c.Query("token")
-	//user_id := c.Query("user_id")
-
-	//user := dao.User{}
-
-	//user, _ := c.Get("user")
-	//User := user.(dao.User)
-	////Id := User.ID
-	//fmt.Println("user: ", user)
-
-	//if user, exist := usersLoginInfo[token]; exist {
-	//MeUser, _ := c.Get("user")
 	userId := c.Query("user_id")
 	id, _ := strconv.Atoi(userId)
-	user, err := service.GetUserById(id)
+	_, err := service.GetUserById(id)
 	if err != nil {
 		c.JSON(http.StatusOK, UserInfoFailResponse{
 			Response: Response{StatusCode: 205, StatusMsg: "user doesn't exist"},
@@ -138,30 +105,10 @@ func UserInfo(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("user is: ", user)
+	Userinfo := service.GetUserInfoById(id)
 
-	total_favorited := service.GetUserLikedCount(id)
-	work_count := service.GetVideoCountByUserId(id)
-	favorite_Count := service.GetUserLikeCount(id)
-
-
-	Userinfo := Userinfo{
-		Id:              id,
-		Name:            user.Username,
-		Avatar:          avatar,
-		BackgroundImage: background_image,
-		Signature:       signature,
-		TotalFavorited: int(total_favorited),
-		WorkCount:       int(work_count),
-		FavoriteCount:   int(favorite_Count),
-	}
 	c.JSON(http.StatusOK, UserInfoResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "test ok"},
 			Userinfo: Userinfo,
 	})
-	//} else {
-	//	c.JSON(http.StatusOK, UserResponse{
-	//		Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-	//	})
-	//}
 }

@@ -57,5 +57,22 @@ func GetVideoCountByUserId(UserId int) int64 {
 	return count
 }
 
+func Get30Videos() []Video{
+	DB := GetDB()
+	tx := DB.Begin()
+	var videos []Video
+	tx.Order("video_id desc").Limit(30).Find(&videos)
+	tx.Commit()
+	return videos
+}
 
+func GetUserVideosByID(userID int) []Video {
+	var user User
+	DB := GetDB()
+	tx := DB.Begin()
+	tx.Preload("Videos").First(&user, userID)
+	videos := user.Videos
+	tx.Commit()
+	return videos
+}
 
