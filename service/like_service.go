@@ -35,3 +35,9 @@ func GetVideoCountByUserId(Id int) int64 {
 	count := dao.GetVideoCountByUserId(Id)
 	return count
 }
+
+func GetUserLikeVideos(Id int) []Video {
+	videos := dao.GetUserLikeVideos(Id)
+	videoInfos := GetVideosInfo(videos, Id)
+	return videoInfos
+}

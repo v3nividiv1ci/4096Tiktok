@@ -2,7 +2,6 @@ package dao
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"log"
 )
 
@@ -99,16 +98,12 @@ func GetUserLikedCount(Id int) int64 {
 	return totalLikes
 }
 
-func UserAllLikedCount(ids [] uint) int64 {
-	var count int64
+func GetUserLikeVideos(Id int) []Video {
 	DB := GetDB()
 	tx := DB.Begin()
-
-	fmt.Println("video_ids are: ", ids)
-	//count = tx.Model(&Video{}).Where("video_id IN ?", ids).Association("Likes").Count()
-	tx.Preload("Videos", func(db *gorm.DB) *gorm.DB {
-		return db.Where("video_id in ?", ids)
-	}).Count(&count)
+	var user User
+	tx.Preload("Likes").First(&user, Id)
+	videos := user.Likes
 	tx.Commit()
-	return count
+	return videos
 }
