@@ -41,10 +41,21 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
+	userId := c.Query("user_id")
+	id, _ := strconv.Atoi(userId)
+	_, err := service.GetUserById(id)
+	if err != nil {
+		c.JSON(http.StatusOK, UserInfoFailResponse{
+			Response: Response{StatusCode: 205, StatusMsg: "user doesn't exist"},
+			Userinfo: nil,
+		})
+		return
+	}
+	Videos := service.GetUserLikeVideos(id)
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
 		},
-		//VideoList: DemoVideos,
+		VideoList: Videos,
 	})
 }
